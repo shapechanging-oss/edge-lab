@@ -1,0 +1,11 @@
+# large or generated files from the labs
+work/backups/
+work/*.csv
+work/*.dump
+# Python and test output
+__pycache__/
+.pytest_cache/
+.venv/
+app/reports/
+# macOS
+.DS_Store

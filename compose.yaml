@@ -1,0 +1,25 @@
+services:
+  lab:
+    build: .
+    container_name: lab
+    hostname: edge-bos-01
+    privileged: true          # needed for systemd, strace, tcpdump, nft
+    tmpfs: [/run, /run/lock]
+    mem_limit: 2g             # gives you a real cgroup OOM to study
+    ports: ["8081:80"]
+    volumes: ["./work:/home/dev/work"]
+  pg:
+    image: postgres:16
+    environment: { POSTGRES_PASSWORD: lab }
+    ports: ["5432:5432"]
+  mysql:
+    image: mysql:8.4
+    environment: { MYSQL_ROOT_PASSWORD: lab }
+    ports: ["3306:3306"]
+  prometheus:
+    image: prom/prometheus
+    volumes: ["./prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["9090:9090"]
+  grafana:
+    image: grafana/grafana
+    ports: ["3000:3000"]
