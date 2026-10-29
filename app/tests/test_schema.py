@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 psycopg = pytest.importorskip("psycopg")
