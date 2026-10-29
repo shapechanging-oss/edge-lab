@@ -1,5 +1,9 @@
 """Tiny origin service for the edge lab."""
-import functools, json, os, signal, threading
+import functools
+import json
+import os
+import signal
+import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 VERSION = os.environ.get("APP_VERSION", "dev")
