@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge-origin
+  labels: { app: edge-origin }
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 90        # after 90s without progress, the rollout is marked failed
+  selector:
+    matchLabels: { app: edge-origin }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }
+  template:
+    metadata:
+      labels: { app: edge-origin }
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+      - name: app
+        image: edge-origin:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - { name: http, containerPort: 5000 }
+        resources:
+          requests: { cpu: 50m, memory: 32Mi }
+          limits:   { memory: 128Mi }
+        startupProbe:
+          httpGet: { path: /health, port: http }
+          periodSeconds: 2
+          failureThreshold: 15         # up to 30s to start
+        readinessProbe:
+          httpGet: { path: /ready, port: http }
+          periodSeconds: 5
+        livenessProbe:
+          httpGet: { path: /health, port: http }
+          periodSeconds: 10
+          failureThreshold: 3
+        lifecycle:
+          preStop:
+            exec: { command: ["sleep", "5"] }
