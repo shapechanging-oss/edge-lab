@@ -12,7 +12,7 @@ VERSION = os.environ.get("APP_VERSION", "dev")
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/health":
-            return self._json(200, {"status": "ok", "version": VERSION})
+            return self._json(200, {"status": "okay", "version": VERSION})
         if self.path == "/ready":
             return self._json(200, {"ready": True})
         return super().do_GET()
